@@ -1,16 +1,37 @@
-# React + Vite
+# 🍽️ POS & KDS Restaurante
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sistema integral para la administración de restaurantes, operando sobre una red local (LAN) para coordinar Meseros y Cocina en tiempo real.
 
-Currently, two official plugins are available:
+## 🚀 Stack Tecnológico
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+*   **Frontend**: React 19 + Vite + Zustand (Gestión rápida de estado global)
+*   **Diseño**: CSS Custom + Bootstrap 5 + Iconos Lucide
+*   **Backend**: Java 17 + Spring Boot 3 + Spring Security
+*   **Base de Datos**: MySQL (JPA/Hibernate)
 
-## React Compiler
+## 📌 Funcionalidades Principales
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1.  **📍 Punto de Venta Dinámico**: Los meseros acceden desde tablets web para asignar mesas, tomar comandos y cobrar (cerrar facturas).
+2.  **🧑‍🍳 Kitchen Display System (KDS)**: Vistas de cocina para roles de Chef, Barista o Parrillero. Actualización instantánea (Polling) para marcar comandas en preparación y listas.
+3.  **📦 Administración y Menú**: Panel protegido para registrar productos, imágenes, precios en tiempo real y emitir códigos QR de acceso automático.
 
-## Expanding the ESLint configuration
+## 🏗️ Puesta en Marcha (Entorno Local)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Requisitos
+
+*   Node.js (18+)
+*   Java JDK 17
+*   MySQL Server (Puerto 3306)
+
+### Pasos
+
+1.  **Base de Datos**: Crea un esquema vacío llamado `restaurante_db`.
+2.  **Credenciales**: Configura el archivo `application.properties` de tu backend con tu usuario/password de MySQL. (Omitido del repositorio).
+3.  **Instalar Frontend**: Ubicado en la raíz, ejecuta `npm install`.
+4.  **Lanzar**. Usa los scripts `.bat` que vienen en el repositorio:
+    *   `Iniciar Sistema.bat`: Ejecutará tu API en Spring Boot por ti y abrirá Vite.
+    *   `Cerrar Sistema.bat`: Cerrará puertos.
+
+## 🔐 Logins y Demo
+
+Consulta el archivo [ACCESOS.md](./ACCESOS.md) para explorar las URL públicas (mesas de clientes) y los credenciales del staff temporal de muestra.

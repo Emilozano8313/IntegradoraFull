@@ -1,0 +1,150 @@
+/* =================================================================
+   main.css — Estilos globales del restaurante
+   Bootstrap 5 se carga por separado en main.jsx
+================================================================= */
+
+/* ── Colores primarios (sobrescribir Bootstrap 5.2+ CSS vars) ─── */
+:root {
+    --bs-primary: #FF7A00;
+    --bs-primary-rgb: 255, 122, 0;
+    --color-primary: #FF7A00;
+    --color-primary-dk: #E06900;
+}
+
+.btn-primary {
+    --bs-btn-bg: #FF7A00;
+    --bs-btn-border-color: #FF7A00;
+    --bs-btn-hover-bg: #E06900;
+    --bs-btn-hover-border-color: #E06900;
+    --bs-btn-active-bg: #cc5f00;
+    --bs-btn-active-border-color: #cc5f00;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: #FF7A00;
+    --bs-btn-border-color: #FF7A00;
+    --bs-btn-hover-bg: #FF7A00;
+    --bs-btn-hover-border-color: #FF7A00;
+}
+
+.text-primary {
+    color: #FF7A00 !important;
+}
+
+.bg-primary {
+    background-color: #FF7A00 !important;
+}
+
+.badge.bg-primary {
+    background-color: #FF7A00 !important;
+}
+
+/* ── Global ──────────────────────────────────────────────────────── */
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #F4F5F7;
+    -webkit-font-smoothing: antialiased;
+}
+
+.btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* ── KDS — Kanban ──────────────────────────────────────────────── */
+.kanban-col-pendiente {
+    border-top: 4px solid #DC3545;
+}
+
+.kanban-col-preparacion {
+    border-top: 4px solid #FFC107;
+}
+
+.kanban-col-listo {
+    border-top: 4px solid #28a745;
+}
+
+.kds-timer {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.kds-ticket {
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s;
+}
+
+.kds-ticket:hover {
+    transform: translateY(-2px);
+}
+
+/* ── Carrito flotante (cliente móvil) ──────────────────────────── */
+.cart-footer-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+    padding: 1rem;
+    z-index: 100;
+}
+
+/* ── Badges de estado de orden ─────────────────────────────────── */
+@keyframes pulse-badge {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.55;
+    }
+}
+
+.badge-stock-bajo {
+    background-color: #DC3545 !important;
+    animation: pulse-badge 1.5s infinite;
+}
+
+.order-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.order-status-badge.status-pendiente {
+    background: #FFF3CD;
+    color: #856404;
+}
+
+.order-status-badge.status-confirmada {
+    background: #D1ECF1;
+    color: #0C5460;
+}
+
+.order-status-badge.status-preparacion {
+    background: #CCE5FF;
+    color: #004085;
+}
+
+.order-status-badge.status-lista {
+    background: #D4EDDA;
+    color: #155724;
+}
+
+.order-status-badge.status-entregada {
+    background: #E2E3E5;
+    color: #383D41;
+}

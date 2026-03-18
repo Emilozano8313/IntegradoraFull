@@ -1,0 +1,37 @@
+/* =================================================================
+   _variables.scss — Personalización Bootstrap 5 (Dart Sass 3 compatible)
+   Usa @use y @forward en lugar de @import (deprecado)
+================================================================= */
+
+// ── Paleta principal ─────────────────────────────────────────────
+$primary: #FF7A00;
+$primary-dark: #E06900;
+$secondary: #6C757D;
+$success: #28a745;
+$danger: #DC3545;
+$warning: #FFC107;
+$info: #0dcaf0;
+
+// ── Tipografía ───────────────────────────────────────────────────
+$font-family-sans-serif: 'Inter', system-ui, -apple-system, sans-serif;
+$font-size-base: 0.9375rem;
+$headings-font-weight: 700;
+
+// ── Fondo ────────────────────────────────────────────────────────
+$body-bg: #F4F5F7;
+$body-color: #212529;
+$card-bg: #FFFFFF;
+$card-border-color: rgba(0, 0, 0, 0.07);
+$card-border-radius: 0.75rem;
+
+// ── Bordes ───────────────────────────────────────────────────────
+$border-radius: 0.5rem;
+$border-radius-lg: 0.75rem;
+$box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+$box-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.06);
+
+// ── Botones ──────────────────────────────────────────────────────
+$btn-padding-y: 0.65rem;
+$btn-padding-x: 1.5rem;
+$btn-font-weight: 600;
+$btn-border-radius: $border-radius;

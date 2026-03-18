@@ -1,11 +1,10 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-// ── URL base de la API — dinámica según el host que abre la app ───────────────
-// localhost:8080  → cuando se abre desde la misma máquina
-// 192.168.X.X:8080 → cuando un celular escanea el QR en la red local
-const API_URL = import.meta.env.VITE_API_URL
-    || `http://${window.location.hostname}:8080/api`;
+// ── URL base de la API PHP ────────────────────────────────────────────────────
+// En desarrollo: http://localhost/api  (XAMPP sirviendo la carpeta api/)
+// En producción: cambia a tu dominio real
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost/api';
 
 /**
  * Helper para llamadas fetch a la API Spring Boot.
@@ -107,19 +106,13 @@ export const useAppStore = create(
                 ),
             })),
 
-            decrementarCantidad: (productoId) => set((state) => {
-                const existe = state.carrito.find(i => i.id === productoId);
-                if (existe && existe.cantidad === 1) {
-                    return { carrito: state.carrito.filter(i => i.id !== productoId) };
-                }
-                return {
-                    carrito: state.carrito.map((item) =>
-                        item.id === productoId
-                            ? { ...item, cantidad: item.cantidad - 1 }
-                            : item
-                    )
-                };
-            }),
+            decrementarCantidad: (productoId) => set((state) => ({
+                carrito: state.carrito.map((item) =>
+                    item.id === productoId && item.cantidad > 1
+                        ? { ...item, cantidad: item.cantidad - 1 }
+                        : item
+                ),
+            })),
 
             limpiarCarrito: () => set({ carrito: [] }),
 
@@ -196,11 +189,6 @@ export const useAppStore = create(
                 return data;
             },
 
-            fetchHistorialOrdenes: async () => {
-                const data = await apiFetch('/ordenes/historial');
-                return data;
-            },
-
             cambiarEstadoOrden: async (ordenId, nuevoEstado) => {
                 await apiFetch(`/ordenes/${ordenId}/estado`, {
                     method: 'PUT',
@@ -268,16 +256,6 @@ export const useAppStore = create(
             // NO afecte otras pestañas con distintos roles.
             logoutLocal: () => {
                 set({ usuario: null });
-            },
-
-            updateFotoPerfil: async (base64String) => {
-                await apiFetch(`/auth/foto`, {
-                    method: 'PUT',
-                    body: JSON.stringify({ foto_perfil: base64String }),
-                });
-                // Refrescar el usuario para obtener la nueva foto en el store
-                const { fetchCurrentUser } = get();
-                await fetchCurrentUser();
             },
 
             fetchCurrentUser: async () => {
@@ -354,15 +332,6 @@ export const useAppStore = create(
 
             deleteUsuario: async (id) => {
                 await apiFetch(`/admin/usuarios/${id}`, { method: 'DELETE' });
-            },
-
-            // ─────────────────────────────────────────────────────────────
-            // MESERO — Cobrar mesa completa (cierra todas las órdenes)
-            // ─────────────────────────────────────────────────────────────
-            cobrarMesa: async (mesaNumero) => {
-                return await apiFetch(`/mesero/mesas/${mesaNumero}/cobrar`, {
-                    method: 'PUT',
-                });
             },
         }),
         {

@@ -17,10 +17,22 @@ import OrderTracker from '../components/cliente/OrderTracker';
  *   'tracker'   → estado de la orden en tiempo real (polling)
  */
 const ClientePage = () => {
-    const { numeroMesa, ordenActual, fetchProducts } = useAppStore();
+    const { numeroMesa, ordenActual, fetchProducts, setNumeroMesa } = useAppStore();
+
+    // Leer mesa directamente de la URL (QR) para evitar condición de carrera con el store
+    const mesaDesdeUrl = new URLSearchParams(window.location.search).get('mesa');
+
+    // Si la mesa viene de la URL, asegurar que el store la tenga
+    useEffect(() => {
+        if (mesaDesdeUrl && !numeroMesa) {
+            setNumeroMesa(parseInt(mesaDesdeUrl, 10));
+        }
+    }, [mesaDesdeUrl, numeroMesa, setNumeroMesa]);
+
+    const mesaActiva = numeroMesa || (mesaDesdeUrl ? parseInt(mesaDesdeUrl, 10) : null);
 
     const [vista, setVista] = useState(() => {
-        return numeroMesa ? 'menu' : 'ingreso';
+        return mesaActiva ? 'menu' : 'ingreso';
     });
 
     const [ordenId, setOrdenId] = useState(ordenActual?.orden_id || null);
@@ -45,13 +57,13 @@ const ClientePage = () => {
         case 'fidelidad':
             return (
                 <>
-                    <MenuCliente numeroMesa={numeroMesa} onVerCarrito={handleVerCarrito} />
+                    <MenuCliente numeroMesa={mesaActiva} onVerCarrito={handleVerCarrito} />
                     <FidelidadModal onContinue={handleContinuarMenu} />
                 </>
             );
 
         case 'menu':
-            return <MenuCliente numeroMesa={numeroMesa} onVerCarrito={handleVerCarrito} />;
+            return <MenuCliente numeroMesa={mesaActiva} onVerCarrito={handleVerCarrito} />;
 
         case 'carrito':
             return <Carrito onBack={handleVolverMenu} onPedidoEnviado={handlePedidoEnviado} />;

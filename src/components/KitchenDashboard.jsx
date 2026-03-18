@@ -125,7 +125,7 @@ const KitchenDashboard = () => {
     // ── Carga de órdenes desde /api/cocina/ordenes ──────────────────────────
     const cargarOrdenes = useCallback(async () => {
         try {
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+            const API_URL = import.meta.env.VITE_API_URL || `${window.location.protocol}//${window.location.hostname}:8080/api`;
             const res = await fetch(`${API_URL}/cocina/ordenes`, {
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },

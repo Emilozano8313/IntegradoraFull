@@ -1,10 +1,12 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-// ── URL base de la API PHP ────────────────────────────────────────────────────
-// En desarrollo: http://localhost/api  (XAMPP sirviendo la carpeta api/)
-// En producción: cambia a tu dominio real
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost/api';
+// ── URL base de la API Spring Boot ────────────────────────────────────────────
+// Se construye dinámicamente para soportar acceso por IP de red local (celulares)
+// Ej: desde PC → http://localhost:8080/api
+// Ej: desde celular → http://192.168.1.50:8080/api
+const API_URL = import.meta.env.VITE_API_URL
+    || `${window.location.protocol}//${window.location.hostname}:8080/api`;
 
 /**
  * Helper para llamadas fetch a la API Spring Boot.

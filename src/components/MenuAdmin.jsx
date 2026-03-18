@@ -260,42 +260,86 @@ const PersonalAdmin = ({ mostrarToast }) => {
     );
 };
 
+// ─── Utilidad para obtener color por nombre de categoría ────────────────────
+const getCategoryColor = (categoriaNombre) => {
+    if (!categoriaNombre || categoriaNombre === 'Otros' || categoriaNombre === 'Todos') return { bg: '#f1f5f9', text: '#475569', border: '#e2e8f0' };
+    
+    // Hash simple basado en string para color consistente
+    let hash = 0;
+    for (let i = 0; i < categoriaNombre.length; i++) hash = categoriaNombre.charCodeAt(i) + ((hash << 5) - hash);
+    
+    const colors = [
+        { bg: '#fee2e2', text: '#991b1b', border: '#fecaca' }, // Red
+        { bg: '#ffedd5', text: '#9a3412', border: '#fed7aa' }, // Orange
+        { bg: '#fef3c7', text: '#92400e', border: '#fde68a' }, // Amber
+        { bg: '#ecfccb', text: '#3f6212', border: '#d9f99d' }, // Lime
+        { bg: '#dcfce7', text: '#166534', border: '#bbf7d0' }, // Green
+        { bg: '#e0f2fe', text: '#075985', border: '#bae6fd' }, // Sky
+        { bg: '#ede9fe', text: '#5b21b6', border: '#ddd6fe' }, // Violet
+        { bg: '#fce7f3', text: '#9d174d', border: '#fbcfe8' }, // Pink
+    ];
+    
+    return colors[Math.abs(hash) % colors.length];
+};
+
 // ─── Componente tarjeta de producto ──────────────────────────────────────────
 const ProductCard = ({ product, onEdit }) => {
     const stockBajo = product.stock_disponible != null && product.stock_disponible <= 3;
+    const catColor = getCategoryColor(product.categoria);
+
     return (
-        <div className="card border-0 shadow-sm h-100" style={{ borderRadius: '1rem', overflow: 'hidden' }}>
+        <div className="card shadow-sm h-100 border-0" style={{ borderRadius: '1.25rem', overflow: 'hidden', transition: 'transform 0.2s', cursor: 'pointer' }} onClick={() => onEdit(product)} onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
             {/* Imagen */}
-            <div style={{ height: 140, background: '#f0f0f0', overflow: 'hidden', position: 'relative' }}>
+            <div style={{ height: 150, background: '#f8fafc', overflow: 'hidden', position: 'relative' }}>
                 {product.imagen_url
                     ? <img src={product.imagen_url} alt={product.nombre}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    : <div className="d-flex align-items-center justify-content-center h-100 text-muted" style={{ fontSize: 48 }}>🍽️</div>
+                    : <div className="d-flex align-items-center justify-content-center h-100 text-slate-300" style={{ fontSize: 48 }}>🍽️</div>
                 }
-                {stockBajo && (
-                    <span className="badge bg-danger position-absolute top-0 end-0 m-2">⚠️ Stock bajo</span>
-                )}
+                <div className="position-absolute top-0 w-100 d-flex justify-content-between p-2">
+                    <span 
+                        className="badge" 
+                        style={{ 
+                            backgroundColor: catColor.bg, 
+                            color: catColor.text,
+                            border: `1px solid ${catColor.border}`,
+                            borderRadius: '1rem',
+                            padding: '0.4em 0.8em',
+                            fontWeight: 700,
+                            letterSpacing: '0.5px'
+                        }}
+                    >
+                        {product.categoria || 'Sin Categoría'}
+                    </span>
+                    {stockBajo && (
+                        <span className="badge bg-danger shadow-sm px-2 py-1" style={{ borderRadius: '1rem' }}>
+                            <span className="me-1">⚠️</span> Stock: {product.stock_disponible}
+                        </span>
+                    )}
+                </div>
             </div>
             {/* Info */}
-            <div className="card-body d-flex flex-column p-3">
-                <h6 className="fw-bold mb-1" style={{ fontSize: '0.95rem' }}>{product.nombre}</h6>
-                <p className="text-muted small mb-2" style={{
+            <div className="card-body d-flex flex-column p-3 bg-white">
+                <h6 className="fw-bolder mb-1 text-dark" style={{ fontSize: '1.05rem', lineHeight: '1.3' }}>{product.nombre}</h6>
+                <p className="text-secondary small mb-3" style={{
                     overflow: 'hidden', display: '-webkit-box',
-                    WebkitLineClamp: 2, WebkitBoxOrient: 'vertical'
+                    WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+                    fontSize: '0.85rem'
                 }}>
-                    {product.descripcion || <em>Sin descripción</em>}
+                    {product.descripcion || <em>Sin descripción detallada</em>}
                 </p>
-                <div className="mt-auto d-flex justify-content-between align-items-center">
-                    <span className="fw-bold text-success fs-5">${Number(product.precio).toFixed(2)}</span>
-                    <span className="text-muted small">Stock: {product.stock_disponible ?? '—'}</span>
+                <div className="mt-auto d-flex justify-content-between align-items-end">
+                    <span className="fw-black fs-5" style={{ color: '#0f172a' }}>
+                        ${Number(product.precio).toFixed(2)}
+                    </span>
+                    <button
+                        className="btn btn-light btn-sm fw-bold border"
+                        style={{ borderRadius: '0.75rem', color: '#334155' }}
+                        onClick={(e) => { e.stopPropagation(); onEdit(product); }}
+                    >
+                        Editar
+                    </button>
                 </div>
-                <button
-                    className="btn btn-outline-primary btn-sm mt-2 w-100 fw-semibold"
-                    style={{ borderRadius: '0.6rem' }}
-                    onClick={() => onEdit(product)}
-                >
-                    ✏️ Editar
-                </button>
             </div>
         </div>
     );
@@ -495,17 +539,26 @@ const MenuAdmin = () => {
                             </button>
                         </div>
 
-                        {/* ── Filtros de categoría ───────────────────────── */}
-                        <div className="d-flex gap-2 flex-wrap mb-4">
-                            {categorias.map(cat => (
-                                <button key={cat}
-                                    className={`btn btn-sm ${filtroCategoria === cat ? 'btn-dark' : 'btn-outline-secondary'}`}
-                                    style={{ borderRadius: '2rem' }}
-                                    onClick={() => setFiltroCategoria(cat)}
-                                >
-                                    {cat}
-                                </button>
-                            ))}
+                        <div className="d-flex gap-2 flex-wrap mb-4 pb-2" style={{ borderBottom: '1px solid #e2e8f0' }}>
+                            {categorias.map(cat => {
+                                const cColor = getCategoryColor(cat);
+                                const isSelected = filtroCategoria === cat;
+                                return (
+                                    <button key={cat}
+                                        className="btn btn-sm shadow-sm transition-all fw-bold px-3 py-1"
+                                        style={{ 
+                                            borderRadius: '2rem',
+                                            backgroundColor: isSelected ? '#0f172a' : cColor.bg,
+                                            color: isSelected ? '#ffffff' : cColor.text,
+                                            border: `1px solid ${isSelected ? '#0f172a' : cColor.border}`,
+                                            transform: isSelected ? 'scale(1.05)' : 'none'
+                                        }}
+                                        onClick={() => setFiltroCategoria(cat)}
+                                    >
+                                        {cat}
+                                    </button>
+                                );
+                            })}
                         </div>
 
                         {/* ── Grid de productos ──────────────────────────── */}

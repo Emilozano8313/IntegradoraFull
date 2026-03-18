@@ -72,6 +72,15 @@ export const useAppStore = create(
 
       setNumeroMesa: (numero) => set({ numeroMesa: numero }),
 
+      // Simula que la mesa siempre existe y está libre
+      validarMesa: async (numero) => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve({ id: numero, numero: numero, estado: 'libre' });
+          }, 300);
+        });
+      },
+
       fetchProducts: async () => {
         set({ loadingProducts: true });
         // Simular retraso de red
